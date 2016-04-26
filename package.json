@@ -1,0 +1,46 @@
+{
+  "name": "gdb-debug",
+  "main": "./lib/main",
+  "version": "0.1.11",
+  "description": "gdb debugger interface for atom",
+  "keywords": [
+    "gdb",
+    "debug",
+    "debugger"
+  ],
+  "repository": "https://github.com/lloiser/gdb-debug",
+  "bugs": {
+    "url": "https://github.com/lloiser/gdb-debug/issues"
+  },
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.5.3 <2.0.0"
+  },
+  "dependencies": {
+    "atom-package-deps": "^4.0.1",
+    "react-for-atom": "^15.0.1-0",
+    "react-redux": "^4.4.5",
+    "redux": "^3.5.2"
+  },
+  "devDependencies": {
+    "eslint": "^2.8.0",
+    "eslint-plugin-babel": "^3.2.0",
+    "eslint-plugin-react": "^5.0.1"
+  },
+  "package-deps": [
+  ],
+  "configSchema": {
+    "DELETE_ME_limitCommandsToGo": {
+      "title": "Commands available only in go source",
+      "description": "Determines whether the commands of this package are only available in go source files",
+      "type": "boolean",
+      "default": false
+    },
+    "panelInitialVisible": {
+      "title": "Panel initially visible",
+      "description": "Determines whether the panel is initially visible for new atom instances or not.",
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

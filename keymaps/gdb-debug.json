@@ -1,0 +1,18 @@
+{
+	"atom-workspace": {
+		"f5":            "gdb-debug:run-package",
+		"ctrl-f5":       "gdb-debug:run-tests",
+		"shift-f5":      "gdb-debug:restart",
+		"f6":            "gdb-debug:stop",
+		"f8":            "gdb-debug:continue",
+		"f9":            "gdb-debug:toggle-breakpoint",
+		"f10":           "gdb-debug:next",
+		"f11":           "gdb-debug:step"
+	},
+	"body.platform-win32 atom-workspace, body.platform-linux atom-workspace": {
+		"ctrl-k ctrl-g": "gdb-debug:toggle-panel"
+	},
+	"body.platform-darwin atom-workspace": {
+		"cmd-k cmd-g": "gdb-debug:toggle-panel"
+	}
+}
