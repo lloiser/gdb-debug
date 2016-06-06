@@ -1,12 +1,20 @@
 "use babel";
 
+
+
+
 // TODO: add the token back to the executeAndWait (useful for the variables?)
+
+
+
+// TODO: somehow the loaded information gets lost after "next" / "continue"
+
 
 import { spawn, exec } from "child_process";
 import * as path from "path";
 import { store, getBreakpoint, getBreakpoints } from "./store";
 
-let gdbProcess;
+let process;
 let isRunning = false;
 
 let variablesCache;
@@ -27,7 +35,7 @@ function addOutputMessage(messageType, message, args) {
 }
 
 function run(file) {
-	if (gdbProcess) {
+	if (process) {
 		return;
 	}
 
@@ -45,7 +53,7 @@ function run(file) {
 		addOutputMessage("gdb-debug", `Starting gdb with "${file}"`);
 
 		isRunning = false;
-		gdbProcess = spawn("gdb", [outFile, "--interpreter=mi2"], { cwd });
+		process = spawn("gdb", [outFile, "--interpreter=mi2"], { cwd });
 
 		wait().then(() => {
 			store.dispatch({ type: "SET_STATE", state: "started" });
@@ -55,15 +63,15 @@ function run(file) {
 			});
 		});
 
-		gdbProcess.stderr.on("data", (chunk) => {
+		process.stderr.on("data", (chunk) => {
 			console.error(">>>>", chunk.toString());
 		});
 
-		gdbProcess.on("close", (code) => {
+		process.on("close", (code) => {
 			console.log(">>>>", "gdb closed with code", code);
 			stop();
 		});
-		gdbProcess.on("error", (err) => {
+		process.on("error", (err) => {
 			console.error(">>>>", "gdb error", err);
 			stop();
 		});
@@ -71,10 +79,10 @@ function run(file) {
 }
 
 export function stop() {
-	if (gdbProcess) {
-		gdbProcess.kill();
+	if (process) {
+		process.kill();
 	}
-	gdbProcess = null;
+	process = null;
 
 	store.dispatch({ type: "STOP" });
 }
@@ -201,8 +209,7 @@ function command(cmd) {
 			return Promise.resolve();
 		}
 
-		// TODO: get all threads and display them in the panel
-
+		// =thread-selected,id="1" --> results here might contain the correct thread!
 		const currentThread = last.value["thread-id"];
 		if (currentThread) {
 			thread = +currentThread;
@@ -236,7 +243,8 @@ function createVariable(v) {
 		name: v.exp || v.name,
 		loaded: hasChildren === false ? true : false, // TODO ???
 		hasChildren,
-		value: hasChildren ? v.type : v.value
+		value: hasChildren ? v.type : v.value,
+		_orig: v
 	};
 }
 
@@ -327,7 +335,8 @@ function updateVariable(path, variables) {
 							name: path.split(".").pop(),
 							loaded: hasChildren === false ? true : false, // TODO ???
 							hasChildren,
-							value: hasChildren ? ch.new_type : ch.value
+							value: hasChildren ? ch.new_type : ch.value,
+							_orig: ch
 						};
 
 						// remove all existing children because the type has changed and
@@ -443,7 +452,7 @@ function getStacktrace() {
 			if (r.type === "done" && r.value.stack) {
 				stacktrace = r.value.stack.map((st) => {
 					return {
-						file: st.file && path.normalize(st.file),
+						file: path.normalize(st.file),
 						line: +st.line,
 						func: st.func,
 						addr: st.addr // TODO: id?
@@ -507,10 +516,7 @@ export function isStarted() {
 	return state !== "notStarted" && state !== "starting";
 }
 
-function wait(waitFor) {
-	if (!waitFor) {
-		waitFor = process.platform.startsWith("win") ? "(gdb) \r\n" : "(gdb) \n";
-	}
+function wait(waitFor = "(gdb) \r\n") {
 	return new Promise(function(resolve) {
 		let output = "";
 		const fn = (chunk) => {
@@ -521,16 +527,16 @@ function wait(waitFor) {
 				const results = lines.slice(0, lines.length-2).map(parseLine);
 				resolve(results);
 			} else {
-				gdbProcess.stdout.once("data", fn);
+				process.stdout.once("data", fn);
 			}
 		};
-		gdbProcess.stdout.once("data", fn);
-		// gdbProcess.stderr.once("data", fn);
+		process.stdout.once("data", fn);
+		// process.stderr.once("data", fn);
 	});
 }
 function executeAndWait(cmd, waitFor) {
 	const p = wait(waitFor);
-	gdbProcess.stdin.write(cmd + "\n");
+	process.stdin.write(cmd + "\n");
 	return p;
 }
 

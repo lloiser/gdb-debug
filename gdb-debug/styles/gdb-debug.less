@@ -1,0 +1,232 @@
+// The ui-variables file is provided by base themes provided by Atom.
+//
+// See https://github.com/atom/atom-dark-ui/blob/master/styles/ui-variables.less
+// for a full listing of what's available.
+@import "ui-variables";
+
+@gdb-debug-debug-line-color-bg: rgba(64, 115, 255, 0.5);
+@gdb-debug-breakpoint-size: 0.8em;
+@gdb-debug-panel-size: 25em;
+@gdb-debug-output-size: 20em;
+
+.gdb-debug-breakpoint {
+	display: inline-block;
+	height: @gdb-debug-breakpoint-size !important;
+	width: @gdb-debug-breakpoint-size;
+	border-radius: 50%;
+	border: 1px solid currentColor;
+	color: red;
+	&-state-busy {
+	}
+	&-state-valid {
+		background-color: currentColor;
+	}
+	&-state-invalid {
+		border-color: orange;
+		background-color: orange;
+	}
+}
+
+atom-text-editor::shadow {
+	.gdb-debug-gutter-breakpoint {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+	}
+	.gdb-debug-breakpoint {
+		.gdb-debug-breakpoint;
+	}
+
+	.gdb-debug-debug-line {
+		background: @gdb-debug-debug-line-color-bg;
+	}
+}
+
+.gdb-debug-panel {
+	display: flex;
+	border-left: 1px solid @pane-item-border-color;
+}
+.gdb-debug-panel-root {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	width: @gdb-debug-panel-size;
+	position: relative;
+}
+
+.gdb-debug-panel-resizer {
+	position: absolute;
+	top: 0; left: 0; bottom: 0;
+	width: 5px;
+	cursor: ew-resize;
+}
+
+.gdb-debug-panel-commands {
+	display: flex;
+	flex-shrink: 0;
+	white-space: nowrap;
+	border-bottom: 1px solid @pane-item-border-color;
+
+	> .btn {
+		flex: 1;
+	}
+}
+
+button.gdb-debug-btn-flat {
+	border: none;
+	border-radius: 0;
+	background: none;
+	min-height: 3em;
+}
+
+.gdb-debug-panel-args {
+	width: 100%;
+	margin-bottom: 0.5em;
+	background: @input-background-color;
+	border: 0;
+	border-bottom: 1px solid @input-border-color;
+	padding: 0.4em;
+}
+
+.gdb-debug-panel-content {
+	overflow: auto;
+	flex: 1;
+}
+
+.gdb-debug-panel-showoutput {
+	flex-shrink: 0;
+	text-align: center;
+}
+
+.gdb-debug-panel-stacktrace,
+.gdb-debug-panel-goroutines {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	& > * {
+		padding: 0.2em 0.5em;
+		cursor: pointer;
+		&:nth-child(odd) {
+			background-color: rgba(0, 0, 0, 0.1);
+		}
+		&:hover {
+			background-color: rgba(0, 0, 0, 0.2);
+		}
+	}
+}
+
+.gdb-debug-panel-variables {
+	li {
+		padding: 0.1em 0;
+	}
+	ol {
+		overflow: visible;
+		margin: 0;
+		padding: 0 0.5em;
+		white-space: pre;
+		list-style: none;
+		ol {
+			padding-left: 1.5em;
+		}
+	}
+}
+
+.gdb-debug-panel-breakpoints {
+	> * {
+		padding: 0.2em 0.5em 0;
+		cursor: pointer;
+		white-space: nowrap;
+		display: flex;
+		align-items: center;
+		> .icon-x::before {
+			height: auto;
+			width: auto;
+			margin-right: 0.3em;
+			flex-shrink: 0;
+			font-size: small;
+		}
+	}
+	.gdb-debug-breakpoint {
+		margin-right: 0.2em;
+		flex-shrink: 0;
+	}
+}
+
+.gdb-debug-output-header {
+	display: flex;
+	padding-left: 0.5em;
+	align-items: center;
+	.text {
+		flex: 1;
+		margin: 0;
+	}
+}
+
+.gdb-debug-output-list {
+	max-height: @gdb-debug-output-size;
+	overflow: auto;
+	white-space: pre;
+	padding: 0.2em 0.5em;
+}
+
+.gdb-debug-expandable {
+	margin-bottom: 0.5em;
+}
+
+.gdb-debug-expandable-header {
+	cursor: pointer;
+	border-bottom: 1px solid currentColor;
+	padding: 0.2em 0.5em;
+	font-weight: bold;
+}
+
+.gdb-debug-expandable-body {
+	overflow-x: auto;
+}
+
+.gdb-debug-expandable[data-expanded="false"] .gdb-debug-expandable-body{
+	display: none;
+}
+
+.gdb-debug-toggle {
+	display: inline-block;
+	cursor: pointer;
+	text-align: center;
+	width: 1em;
+
+	&::before {
+		width: auto;
+		height: auto;
+		font-size: inherit;
+	}
+	&.gdb-debug-toggle-hidden {
+		visibility: hidden;
+	}
+}
+
+.gdb-debug-busy {
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
+.gdb-debug-busy-indicator {
+	display: inline-block;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	height: 40px;
+	width: 6px;
+	background-color: currentColor;
+	animation: gdb-debug-busy-animation 1.2s infinite ease-in-out;
+	& > .r2 { animation-delay: -1.1s; }
+	& > .r3 { animation-delay: -1.0s; }
+	& > .r4 { animation-delay: -0.9s; }
+	& > .r5 { animation-delay: -0.8s; }
+}
+
+@keyframes gdb-debug-busy-animation {
+	0%, 40%, 100% {
+		transform: scaleY(0.4);
+	}  20% {
+		transform: scaleY(1.0);
+	}
+}
