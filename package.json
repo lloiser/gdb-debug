@@ -29,13 +29,15 @@
   },
   "package-deps": [
   ],
+  "providedServices": {
+    "gdb-debug": {
+      "description": "Start the gdb debugger using this API.",
+      "versions": {
+        "0.1.0": "provideDebug"
+      }
+    }
+  },
   "configSchema": {
-    "DELETE_ME_limitCommandsToGo": {
-      "title": "Commands available only in go source",
-      "description": "Determines whether the commands of this package are only available in go source files",
-      "type": "boolean",
-      "default": false
-    },
     "panelInitialVisible": {
       "title": "Panel initially visible",
       "description": "Determines whether the panel is initially visible for new atom instances or not.",
