@@ -1,7 +1,7 @@
 {
   "name": "gdb-debug",
   "main": "./lib/main",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "gdb debugger interface for atom",
   "keywords": [
     "gdb",
