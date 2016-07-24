@@ -306,5 +306,5 @@ export default {
 };
 
 function shortenPath(file) {
-	return path.normalize(file).split(path.sep).slice(-2).join(path.sep);
+	return file ? path.normalize(file).split(path.sep).slice(-2).join(path.sep) : "???";
 }
